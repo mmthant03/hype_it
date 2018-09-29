@@ -62,3 +62,7 @@ typings/
 
 # visual studio setting
 .vscode/
+
+# unnecessary but will make conflict
+**/*.DS_Store*
+.package-lock.json
