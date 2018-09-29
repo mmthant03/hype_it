@@ -16,7 +16,45 @@ pool.connect();
 let server = http.createServer(function (req,res) {
     let uri = url.parse(req.url);
     console.log(req.method + " " + uri.pathname);
+    switch (uri.pathname) {
+      case "/":
+        send_file(res, "index.html");
+        break;
+      case "/index.html":
+        send_file(res, "index.html");
+        break;
+      case "createCat":
+        createCategory(req, res);
+        break;
+      case "createItem":
+        createItem(req, res);
+        break;
+      case "likeItem":
+        likeItem(req, res);
+        break;
+      case "dislikeItem":
+        dislikeItem(req, res);
+        break;
+      default:
+        res.end("404 not found");
+    }
 });
 
 server.listen(port);
 console.log("Server is listening to port 8080");
+
+// subroutines
+function send_file(res, filename) {
+  fs.readFile(filename, function(error, content) {
+    res.writeHead(200, { "Content-type": "text/html" });
+    res.end(content, "utf-8");
+  });
+}
+
+function createCategory(req, res) {}
+
+function createItem(req, res) {}
+
+function likeItem(req, res) {}
+
+function dislikeItem(req, res) {}
