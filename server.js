@@ -24,6 +24,8 @@ let server = http.createServer(function(req, res) {
     case "/index.html":
       send_file(res, "index.html");
       break;
+    case "readData":
+      readData(req, res);
     case "createCat":
       createCategory(req, res);
       break;
@@ -59,3 +61,5 @@ function createItem(req, res) {}
 function likeItem(req, res) {}
 
 function dislikeItem(req, res) {}
+
+function readData(req, res) {}
