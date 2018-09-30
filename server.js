@@ -72,15 +72,15 @@ function generateID() {
     }] 
 */
 async function readItem(req, res) {
-    let statusCode = 0;
     let queryText = "SELECT * FROM public.item;";
     try {
         let data = await pool.query(queryText);
-        statusCode = 200;
+        console.log(JSON.stringify(data.rows));
+        //statusCode = 200;
         res.end(JSON.stringify(data.rows));
     } catch (err) {
         console.log(err);
-        statusCode = 404;
+        //statusCode = 404;
     }
 }
 
