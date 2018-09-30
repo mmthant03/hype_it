@@ -53,13 +53,66 @@
     </form>
 </div>
 
+  <script>
+      var item_arr = [];
+      //read items and build items
+      read();
+      document.getElementById('add').addEventListener('click', function (evt)
+      {
+          var item = {};
+          item.id = Date.now().toString(36);
+          item.name = document.getElementById('name').value;
+          item.category = document.getElementById('cat').value;
+          item.manufacturer = document.getElementById('manufacturer').value;
+          item.like_count = 0;
+          item.dislike_count = 0;
+          item.image = document.getElementById('file');
+          item.url = document.getElementById('url').value;
+          create(item);
+          event.preventDefault()});
+    document.getElementById('likeButton').addEventListener('click', function (evt) {
+      const item = {
+        id: document.getElementById('id').value,
+        likes: document.getElementById('likes').value,
+        dislikes: document.getElementById('dislikes').value,
+      };
+      action(item);
+      event.preventDefault();
+    });
+
+    document.getElementById('dislikeButton').addEventListener('click', function (evt) {
+      const item = {
+        id: document.getElementById('id').value,
+        likes: document.getElementById('likes').value,
+        dislikes: document.getElementById('dislikes').value,
+      };
+      action(item);
+      event.preventDefault();
+    });
+    // reads all data from server, and calls build
+    function read() {
+      var request = new XMLHttpRequest();
+      request.open('GET', '/read');
+      request.responseType = 'json';
+      request.onload = function () {
+        category_arr = request.response;
+        build(category_arr);
+      };
+      request.send();
+    }
+
+    function build(category_arr) {
+      // https://wesbos.com/template-strings-html/
+      var results_html = `${
+        category_arr.map(item =>
+          `
 <div id="results">
     <div>
         <div class="col s12 m8 offset-m2 l6 offset-l3">
             <div class="card grey lighten-5 z-depth-1">
                 <div class="row valign-wrapper">
                     <div class="col s2">
-                        <img id="image" src="balenciaga.jpg" alt="" class="rectangle responsive-img"> <!-- notice the "circle" class -->
+                        <img id="image" src="balenciaga.jpg" alt="" class="rectangle responsive-img">
                     </div>
                     <div class="card-content col s10">
                         <span class="card-title">Embellished Platform Spike Texture Clog, Rosebonbon</span>
@@ -71,23 +124,35 @@
         </div>
     </div>
 </div>
+          `
+        ).join('')
+        }`;
+      document.getElementById('results').innerHTML = results_html;
+    }
+
+    function create(item) {
+      var request = new XMLHttpRequest();
+      request.open('PUT', '/create');
+      request.responseType = 'text';
+      request.onload = function () {
+        console.log('done!');
+        read();
+      }
+      request.send(JSON.stringify(item));
+      console.log('create');
+    }
+
+    function action(item) {
+      var request = new XMLHttpRequest();
+      request.open('PUT', '/action');
+      request.responseType = 'text';
+      request.onload = function (item) {
+        console.log('done!');
+        read();
+      }
+      request.send(JSON.stringify(artwork));
+      console.log('action');
+    }
+  </script>
 </body>
-
-<script>
-    var item_arr = [];
-    //read items and build items
-
-    document.getElementById('add').addEventListener('click', function (evt)
-    {
-        var item = {};
-        item.id = Date.now().toString(36);
-        item.name = document.getElementById('name').value;
-        item.category = document.getElementById('cat').value;
-        item.manufacturer = document.getElementById('manufacturer').value;
-        item.like_count = 0;
-        item.dislike_count = 0;
-        item.image = document.getElementById('file');
-        item.url = document.getElementById('url').value;
-    });
-</script>
 </html>
