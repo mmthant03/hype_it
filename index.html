@@ -1,40 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head class="container">
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
-    <div class="container">
-        <h1 class="center-align">Rank It</h1>
-        <nav>
-            <div class="nav-wrapper indigo darken-4">
-                <a href=""class="brand-logo">Category</a>
-                <ul class="right hide-on-med-and-down">
-                    <li><a href="">Clothing</a></li>
-                </ul>
-            </div>
-        </nav>
-    </div>
+
+
+    <h1 class="center-align">Rank It</h1>
+    <nav>
+        <div class="nav-wrapper indigo darken-4">
+            <a href=""class="brand-logo">Category</a>
+            <ul class="right">
+                <li><a href="">Shoes</a></li>
+                <li><a href="">Clothing</a></li>
+            </ul>
+        </div>
+    </nav>
+
 </head>
 
-<body>
-<div class="container">
-    <div class="col s12 m8 offset-m2 l6 offset-l3">
-        <div class="card-panel grey lighten-5 z-depth-1">
-            <div class="row valign-wrapper">
-                <div class="col s2">
-                    <img id="image"src="images/yuna.jpg" alt="" class="rectangle responsive-img"> <!-- notice the "circle" class -->
-                </div>
-                <div class="col s10">
-              <span id="description" class="black-text">
-                This is a square image. Add the "circle" class to it to make it appear circular.
-              </span>
+<body class="container">
+
+<div class="row">
+    <form class="col s12">
+
+        <div class="input-field col s4">
+            <input id="name" placeholder="Name of Product" type="text" > <!--https://stackoverflow.com/a/4209108-->
+        </div>
+        <div class="input-field col s4">
+            <input id="cat" placeholder="Category i.e., Clothing" type="text">
+        </div>
+        <div class="input-field col s4">
+            <input id="manufacturer" placeholder="Manufacturer" type="text">
+        </div>
+        <div class="input-field col s4">
+            <input id="url" placeholder="Url" type="text">
+        </div>
+        <div class="file-field input-field input-field col s4">
+            <div class="btn">
+                <span>File</span>
+                <input id="file" type="file">
+            </div>
+            <div class="file-path-wrapper">
+                <input class="file-path validate" placeholder="File name" type="text">
+            </div>
+        </div>
+        <div class="input-field col s4">
+            <button class="btn waves-effect waves-light grey darken-2" id="add">Add</button>
+        </div>
+    </form>
+</div>
+
+<div id="results">
+    <div>
+        <div class="col s12 m8 offset-m2 l6 offset-l3">
+            <div class="card grey lighten-5 z-depth-1">
+                <div class="row valign-wrapper">
+                    <div class="col s2">
+                        <img id="image" src="balenciaga.jpg" alt="" class="rectangle responsive-img"> <!-- notice the "circle" class -->
+                    </div>
+                    <div class="card-content col s10">
+                        <span class="card-title">Embellished Platform Spike Texture Clog, Rosebonbon</span>
+                        <p>Balenciaga</p>
+                        <a href="https://www.neimanmarcus.com/p/balenciaga-embellished-platform-spike-texture-clog-rosebonbon-prod206440125?ecid=NMCS__GooglePLA&utm_source=google_shopping&adpos=1o3&scid=scplpsku175870558&sc_intid=sku175870558&gclid=Cj0KCQjw6MHdBRCtARIsAEigMxHyhsmFORTc8rDYbgfW_k7SfwHURAWbOe9cgCQHuxHuA7OLWSpCkpwaAlhhEALw_wcB">This is a link</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 </body>
+
+<script>
+    var item_arr = [];
+    //read items and build items
+
+    document.getElementById('add').addEventListener('click', function (evt)
+    {
+        var item = {};
+        item.id = Date.now().toString(36);
+        item.name = document.getElementById('name').value;
+        item.category = document.getElementById('cat').value;
+        item.manufacturer = document.getElementById('manufacturer').value;
+        item.like_count = 0;
+        item.dislike_count = 0;
+        item.image = document.getElementById('file');
+        item.url = document.getElementById('url').value;
+    });
+</script>
 </html>
