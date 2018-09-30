@@ -1,40 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
-    <div class="container">
-        <h1 class="center-align">Rank It</h1>
-        <nav>
-            <div class="nav-wrapper indigo darken-4">
-                <a href=""class="brand-logo">Category</a>
-                <ul class="right hide-on-med-and-down">
-                    <li><a href="">Clothing</a></li>
-                </ul>
-            </div>
-        </nav>
-    </div>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
+  <div class="container">
+    <h1 class="center-align">Rank It</h1>
+    <nav>
+      <div class="nav-wrapper indigo darken-4">
+        <a href="" class="brand-logo">Category</a>
+        <ul class="right hide-on-med-and-down">
+          <li><a href="">Clothing</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
 </head>
 
 <body>
-<div class="container">
-    <div class="col s12 m8 offset-m2 l6 offset-l3">
-        <div class="card-panel grey lighten-5 z-depth-1">
-            <div class="row valign-wrapper">
-                <div class="col s2">
-                    <img id="image"src="images/yuna.jpg" alt="" class="rectangle responsive-img"> <!-- notice the "circle" class -->
+  <script>
+    var category_arr = [];
+    read();
+    document.getElementById('likeButton').addEventListener('click', function (evt) {
+      const item = {
+        id: document.getElementById('id').value,
+        likes: document.getElementById('likes').value,
+        dislikes: document.getElementById('dislikes').value,
+      };
+      action(item);
+      event.preventDefault();
+    });
+
+    document.getElementById('dislikeButton').addEventListener('click', function (evt) {
+      const item = {
+        id: document.getElementById('id').value,
+        likes: document.getElementById('likes').value,
+        dislikes: document.getElementById('dislikes').value,
+      };
+      action(item);
+      event.preventDefault();
+    });
+
+    document.getElementById('add').addEventListener('click', function (evt) {
+      const item = {
+        id: document.getElementById('id').value,
+        name: document.getElementById('name').value,
+        category: document.getElementById('category').value,
+        manufacturer: document.getElementById('manufacturer').value,
+        likes: document.getElementById('likes').value,
+        dislikes: document.getElementById('dislikes').value,
+        image: document.getElementById('image').value,
+        url: document.getElementById('url').value,
+      };
+      create(item);
+      event.preventDefault();
+    });
+
+    // reads all data from server, and calls build
+    function read() {
+      var request = new XMLHttpRequest();
+      request.open('GET', '/read');
+      request.responseType = 'json';
+      request.onload = function () {
+        gallery_arr = request.response;
+        build(gallery_arr);
+      };
+      request.send();
+    }
+
+    function build(category_arr) {
+      // https://wesbos.com/template-strings-html/
+      var results_html = `${
+        gallery_arr.map(item =>
+          `
+          <div class="container">
+            <div class="col s12 m8 offset-m2 l6 offset-l3">
+              <div class="card-panel grey lighten-5 z-depth-1">
+                <div class="row valign-wrapper">
+                  <div class="col s2">
+                    <img id="image" src="images/yuna.jpg" alt="" class="rectangle responsive-img">
+                    <!-- notice the "circle" class -->
+                  </div>
+                  <div class="col s10">
+                    <span id="description" class="black-text">
+                    This is a square image. Add the "circle" class to it to make it appear circular.
+                    </span>
+
+                    <span> Item Name: ${item.name}</span>
+                    <span>Manufacturer ${item.manufacturer} </span>
+                    <span id="likes">Likes: ${item.likes}</span>
+                    <span id="dislikes">Dislikes: ${item.dislikes}</span>
+                    <span>Url ${item.url}</span>
+                  </div>
                 </div>
-                <div class="col s10">
-              <span id="description" class="black-text">
-                This is a square image. Add the "circle" class to it to make it appear circular.
-              </span>
-                </div>
+              </div>
             </div>
-        </div>
-    </div>
-</div>
+          </div>
+          `
+        ).join('')
+        }`
+      document.getElementById('results').innerHTML = results_html;
+    }
+
+    function create(item) {
+      var request = new XMLHttpRequest();
+      request.open('PUT', '/create');
+      request.responseType = 'text';
+      request.onload = function () {
+        console.log('done!');
+        read();
+      }
+      request.send(JSON.stringify(item));
+      console.log('create');
+    }
+
+    function action(item) {
+      var request = new XMLHttpRequest();
+      request.open('PUT', '/action');
+      request.responseType = 'text';
+      request.onload = function (item) {
+        console.log('done!');
+        read();
+      }
+      request.send(JSON.stringify(artwork));
+      console.log('action');
+    }
+  </script>
 </body>
+
 </html>
