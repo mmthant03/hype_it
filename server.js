@@ -33,6 +33,13 @@ let server = http.createServer(function (req, res) {
             break;
         case "/action": // Like or Dislike an item
             action(req, res);
+            break;
+        case "/test.html":
+            send_file(res, "test.html");
+            break;
+        case "/uploadImage":
+            receiveImage(req, res);
+            break;
         default:
             res.end("404 not found");
     }
@@ -40,6 +47,18 @@ let server = http.createServer(function (req, res) {
 
 server.listen(port);
 console.log("Server is listening to port 8080");
+
+function receiveImage(req, res) {
+    let body = []
+    req.on('data', function(chunk) {
+        body.push.chunk;
+    }).on('end', function () {
+
+        console.log(body);
+    })
+    
+}
+
 
 // subroutines
 function send_file(res, filename) {
