@@ -1,21 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+<head class="container">
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
 
-<head>
-  <meta charset="UTF-8">
-  <title>Title</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
-  <div class="container">
+
     <h1 class="center-align">Rank It</h1>
     <nav>
-      <div class="nav-wrapper indigo darken-4">
-        <a href="" class="brand-logo">Category</a>
-        <ul class="right hide-on-med-and-down">
-          <li><a href="">Clothing</a></li>
-        </ul>
-      </div>
+        <div class="nav-wrapper indigo darken-4">
+            <a href=""class="brand-logo">Category</a>
+            <ul class="right">
+                <li><a href="">Shoes</a></li>
+                <li><a href="">Clothing</a></li>
+            </ul>
+        </div>
     </nav>
   </div>
   <div id="results">
@@ -23,10 +24,55 @@
   </div>
 </head>
 
-<body>
+<body class="container">
+
+<div class="row">
+    <form class="col s12">
+
+        <div class="input-field col s4">
+            <input id="name" placeholder="Name of Product" type="text" > <!--https://stackoverflow.com/a/4209108-->
+        </div>
+        <div class="input-field col s4">
+            <input id="cat" placeholder="Category i.e., Clothing" type="text">
+        </div>
+        <div class="input-field col s4">
+            <input id="manufacturer" placeholder="Manufacturer" type="text">
+        </div>
+        <div class="input-field col s4">
+            <input id="url" placeholder="Url" type="text">
+        </div>
+        <div class="file-field input-field input-field col s4">
+            <div class="btn">
+                <span>File</span>
+                <input id="file" type="file">
+            </div>
+            <div class="file-path-wrapper">
+                <input class="file-path validate" placeholder="File name" type="text">
+            </div>
+        </div>
+        <div class="input-field col s4">
+            <button class="btn waves-effect waves-light grey darken-2" id="add">Add</button>
+        </div>
+    </form>
+</div>
+
   <script>
-    var category_arr = [];
-    read();
+      var item_arr = [];
+      //read items and build items
+      read();
+      document.getElementById('add').addEventListener('click', function (evt)
+      {
+          var item = {};
+          item.id = Date.now().toString(36);
+          item.name = document.getElementById('name').value;
+          item.category = document.getElementById('cat').value;
+          item.manufacturer = document.getElementById('manufacturer').value;
+          item.like_count = 0;
+          item.dislike_count = 0;
+          item.image = document.getElementById('file');
+          item.url = document.getElementById('url').value;
+          create(item);
+          event.preventDefault()});
     document.getElementById('likeButton').addEventListener('click', function (evt) {
       const item = {
         id: document.getElementById('id').value,
@@ -46,30 +92,14 @@
       action(item);
       event.preventDefault();
     });
-
-    document.getElementById('add').addEventListener('click', function (evt) {
-      const item = {
-        id: document.getElementById('id').value,
-        name: document.getElementById('name').value,
-        category: document.getElementById('category').value,
-        manufacturer: document.getElementById('manufacturer').value,
-        likes: document.getElementById('likes').value,
-        dislikes: document.getElementById('dislikes').value,
-        image: document.getElementById('image').value,
-        url: document.getElementById('url').value,
-      };
-      create(item);
-      event.preventDefault();
-    });
-
     // reads all data from server, and calls build
     function read() {
       var request = new XMLHttpRequest();
       request.open('GET', '/read');
       request.responseType = 'json';
       request.onload = function () {
-        gallery_arr = request.response;
-        build(gallery_arr);
+        category_arr = request.response;
+        build(category_arr);
       };
       request.send();
     }
@@ -79,9 +109,10 @@
       var results_html = `${
         category_arr.map(item => 
           `
-          <div class="container">
-            <div class="col s12 m8 offset-m2 l6 offset-l3">
-              <div class="card-panel grey lighten-5 z-depth-1">
+<div id="results">
+    <div>
+        <div class="col s12 m8 offset-m2 l6 offset-l3">
+            <div class="card grey lighten-5 z-depth-1">
                 <div class="row valign-wrapper">
                   <div class="col s2">
                     <img id="image" src="images/yuna.jpg" alt="" class="rectangle responsive-img">
@@ -98,13 +129,22 @@
                     <span id="dislikes">Dislikes: ${item.dislikes}</span>
                     <span>Url ${item.market_url}</span>
                   </div>
+                    <div class="col s2">
+                        <img id="image" src="balenciaga.jpg" alt="" class="rectangle responsive-img">
+                    </div>
+                    <div class="card-content col s10">
+                        <span class="card-title">Embellished Platform Spike Texture Clog, Rosebonbon</span>
+                        <p>Balenciaga</p>
+                        <a href="https://www.neimanmarcus.com/p/balenciaga-embellished-platform-spike-texture-clog-rosebonbon-prod206440125?ecid=NMCS__GooglePLA&utm_source=google_shopping&adpos=1o3&scid=scplpsku175870558&sc_intid=sku175870558&gclid=Cj0KCQjw6MHdBRCtARIsAEigMxHyhsmFORTc8rDYbgfW_k7SfwHURAWbOe9cgCQHuxHuA7OLWSpCkpwaAlhhEALw_wcB">This is a link</a>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
+        </div>
+    </div>
+</div>
           `
         ).join('')
-        }`
+        }`;
       document.getElementById('results').innerHTML = results_html;
     }
 
@@ -133,5 +173,4 @@
     }
   </script>
 </body>
-
 </html>
