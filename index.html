@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head class="container">
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
 
 
+<<<<<<< HEAD
     <h1 class="center-align">Rank It</h1>
     <nav>
         <div class="nav-wrapper indigo darken-4">
@@ -22,62 +24,78 @@
   <div id="results">
     
   </div>
+=======
+  <h1 class="center-align">Rank It</h1>
+  <nav>
+    <div class="nav-wrapper teal darken-1">
+      <a href="" class="brand-logo">Category</a>
+      <ul class="right">
+        <li><a href="">Shoes</a></li>
+        <li><a href="">Clothing</a></li>
+      </ul>
+    </div>
+  </nav>
+
+>>>>>>> 33c8cb492aae576d9a4fa8e54fc161951d65b016
 </head>
 
 <body class="container">
 
-<div class="row">
+  <div class="row">
     <form class="col s12">
 
-        <div class="input-field col s4">
-            <input id="name" placeholder="Name of Product" type="text" > <!--https://stackoverflow.com/a/4209108-->
+      <div class="input-field col s4">
+        <input id="name" placeholder="Name of Product" type="text">
+        <!--https://stackoverflow.com/a/4209108-->
+      </div>
+      <div class="input-field col s4">
+        <input id="cat" placeholder="Category i.e., Clothing" type="text">
+      </div>
+      <div class="input-field col s4">
+        <input id="manufacturer" placeholder="Manufacturer" type="text">
+      </div>
+      <div class="input-field col s4">
+        <input id="url" placeholder="Url" type="text">
+      </div>
+      <div class="file-field input-field input-field col s4">
+        <div class="btn">
+          <span>File</span>
+          <input id="file" type="file">
         </div>
-        <div class="input-field col s4">
-            <input id="cat" placeholder="Category i.e., Clothing" type="text">
+        <div class="file-path-wrapper">
+          <input class="file-path validate" placeholder="File name" type="text">
         </div>
-        <div class="input-field col s4">
-            <input id="manufacturer" placeholder="Manufacturer" type="text">
-        </div>
-        <div class="input-field col s4">
-            <input id="url" placeholder="Url" type="text">
-        </div>
-        <div class="file-field input-field input-field col s4">
-            <div class="btn">
-                <span>File</span>
-                <input id="file" type="file">
-            </div>
-            <div class="file-path-wrapper">
-                <input class="file-path validate" placeholder="File name" type="text">
-            </div>
-        </div>
-        <div class="input-field col s4">
-            <button class="btn waves-effect waves-light grey darken-2" id="add">Add</button>
-        </div>
+      </div>
+      <div class="input-field col s4">
+        <button class="btn waves-effect waves-light grey darken-2" id="add">Add</button>
+      </div>
     </form>
-</div>
-
+  </div>
+  <div id="results">
+  </div>
   <script>
-      var item_arr = [];
-      //read items and build items
-      read();
-      document.getElementById('add').addEventListener('click', function (evt)
-      {
-          var item = {};
-          item.id = Date.now().toString(36);
-          item.name = document.getElementById('name').value;
-          item.category = document.getElementById('cat').value;
-          item.manufacturer = document.getElementById('manufacturer').value;
-          item.like_count = 0;
-          item.dislike_count = 0;
-          item.image = document.getElementById('file');
-          item.url = document.getElementById('url').value;
-          create(item);
-          event.preventDefault()});
+    var item_arr = [];
+    //read items and build items
+    read();
+    document.getElementById('add').addEventListener('click', function (evt) {
+      var item = {
+        id: Date.now().toString(36),
+        name: document.getElementById('name').value,
+        category: document.getElementById('cat').value,
+        manufacturer: document.getElementById('manufacturer').value,
+        like_count: 0,
+        dislike_count: 0,
+        image: document.getElementById('file'),
+        url: document.getElementById('url').value,
+      };
+      create(item);
+      event.preventDefault()
+    });
     document.getElementById('likeButton').addEventListener('click', function (evt) {
       const item = {
         id: document.getElementById('id').value,
-        likes: document.getElementById('likes').value,
-        dislikes: document.getElementById('dislikes').value,
+        like_count: document.getElementById('likes').value,
+        dislike_count: document.getElementById('dislikes').value,
       };
       action(item);
       event.preventDefault();
@@ -86,14 +104,15 @@
     document.getElementById('dislikeButton').addEventListener('click', function (evt) {
       const item = {
         id: document.getElementById('id').value,
-        likes: document.getElementById('likes').value,
-        dislikes: document.getElementById('dislikes').value,
+        like_count: document.getElementById('likes').value,
+        dislike_count: document.getElementById('dislikes').value,
       };
       action(item);
       event.preventDefault();
     });
     // reads all data from server, and calls build
     function read() {
+      console.log('read');
       var request = new XMLHttpRequest();
       request.open('GET', '/read');
       request.responseType = 'json';
@@ -105,11 +124,12 @@
     }
 
     function build(category_arr) {
+      console.log('build');
       // https://wesbos.com/template-strings-html/
       var results_html = `${
         category_arr.map(item => 
           `
-<div id="results">
+
     <div>
         <div class="col s12 m8 offset-m2 l6 offset-l3">
             <div class="card grey lighten-5 z-depth-1">
@@ -130,18 +150,23 @@
                     <span>Url ${item.market_url}</span>
                   </div>
                     <div class="col s2">
-                        <img id="image" src="balenciaga.jpg" alt="" class="rectangle responsive-img">
+                        <img id="image" src=${item.image} alt="" class="rectangle responsive-img">
                     </div>
                     <div class="card-content col s10">
-                        <span class="card-title">Embellished Platform Spike Texture Clog, Rosebonbon</span>
-                        <p>Balenciaga</p>
-                        <a href="https://www.neimanmarcus.com/p/balenciaga-embellished-platform-spike-texture-clog-rosebonbon-prod206440125?ecid=NMCS__GooglePLA&utm_source=google_shopping&adpos=1o3&scid=scplpsku175870558&sc_intid=sku175870558&gclid=Cj0KCQjw6MHdBRCtARIsAEigMxHyhsmFORTc8rDYbgfW_k7SfwHURAWbOe9cgCQHuxHuA7OLWSpCkpwaAlhhEALw_wcB">This is a link</a>
+                        <span class="card-title">${item.name}</span>
+                        <p>${item.manufacturer}</p>
+                        <a href=${item.url}>Link</a>
+                        <a class="btn-floating"><i class="material-icons">add</i></a>
+                    </div>
+                    <div>
+                        <a class="btn-flat"><i class="material-icons">arrow_upward</i>${item.like_count}</a>
+                        <a class="btn-flat"><i class="material-icons">arrow_downward</i>${item.dislike_count}</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+
           `
         ).join('')
         }`;
@@ -172,5 +197,7 @@
       console.log('action');
     }
   </script>
+
 </body>
+
 </html>
