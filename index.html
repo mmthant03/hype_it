@@ -74,25 +74,7 @@
       create(item);
       event.preventDefault()
     });
-    document.getElementById('likeButton').addEventListener('click', function (evt) {
-      const item = {
-        id: document.getElementById('id').value,
-        like_count: document.getElementById('likes').value,
-        dislike_count: document.getElementById('dislikes').value,
-      };
-      action(item);
-      event.preventDefault();
-    });
 
-    document.getElementById('dislikeButton').addEventListener('click', function (evt) {
-      const item = {
-        id: document.getElementById('id').value,
-        like_count: document.getElementById('likes').value,
-        dislike_count: document.getElementById('dislikes').value,
-      };
-      action(item);
-      event.preventDefault();
-    });
     // reads all data from server, and calls build
     function read() {
       console.log('read');
@@ -106,39 +88,62 @@
       request.send();
     }
 
+
     function build(category_arr) {
       console.log('build');
       // https://wesbos.com/template-strings-html/
       var results_html = `${
-        category_arr.map(item =>
-          `
-
-    <div>
-        <div class="col s12 m8 offset-m2 l6 offset-l3">
+        category_arr.map(
+          item =>
+            `
+        <div id=${item.id}>
+          <input type="hidden" id="id" name="id" value=${item.id}/>
+          <div class="col s12 m8 offset-m2 l6 offset-l3">
             <div class="card grey lighten-5 z-depth-1">
-                <div class="row valign-wrapper">
-                    <div class="col s2">
-                        <img id="image" src=${item.image} alt="" class="rectangle responsive-img">
-                    </div>
-                    <div class="card-content col s10">
-                        <span class="card-title">${item.name}</span>
-                        <p>${item.manufacturer}</p>
-                        <a href=${item.url}>Link</a>
-                        <a class="btn-floating"><i class="material-icons">add</i></a>
-                    </div>
-                    <div>
-                        <a class="btn-flat"><i class="material-icons">arrow_upward</i>${item.like_count}</a>
-                        <a class="btn-flat"><i class="material-icons">arrow_downward</i>${item.dislike_count}</a>
-                    </div>
+              <div class="row valign-wrapper">
+                <div class="col s2">
+                  <img id="image" src=${item.image} alt="" class="rectangle responsive-img">
                 </div>
+                <div class="card-content col s10">
+                  <span class="card-title">${item.name}</span>
+                  <p>${item.manufacturer}</p>
+                  <a href=${item.url}>Link</a>
+                  <a class="btn-floating"><i class="material-icons">add</i></a></div>
+                  <div>
+                    <a class="btn-flat" id="likeButton">
+                      <i class="material-icons" id="likeButton">arrow_upward</i>
+                      <input type="hidden" id="likeCount" name="likeCount" value=${item.like_count}/>
+                      ${item.like_count}
+                    </a>
+                    <a class="btn-flat id="dislikeButton">
+                      <i class="material-icons" id="dislikeButton">arrow_downward</i>
+                      <input type="hidden" id="dislikeCount" name="dislikeCount" value=${item.dislike_count}/>
+                          ${item.dislike_count}
+                    </a>
+                  </div>
+              </div>
             </div>
+          </div>
         </div>
-    </div>
-
           `
         ).join('')
         }`;
       document.getElementById('results').innerHTML = results_html;
+      document.getElementById('likeButton').addEventListener('click', function (evt) {
+        const item = {};
+        item.id = document.getElementById('id').value;
+        item.action = parseInt(document.getElementById('likeCount').value) + 1;
+        action(item);
+        event.preventDefault();
+      });
+
+      document.getElementById('dislikeButton').addEventListener('click', function (evt) {
+        const item = {};
+        item.id = document.getElementById('id').value;
+        item.action = parseInt(document.getElementById('dislikeCount').value) + 1;
+        action(item);
+        event.preventDefault();
+      });
     }
 
     function create(item) {
@@ -161,7 +166,7 @@
         console.log('done!');
         read();
       }
-      request.send(JSON.stringify(artwork));
+      request.send(JSON.stringify(item));
       console.log('action');
     }
   </script>
