@@ -11,7 +11,7 @@
 
   <h1 class="center-align">Rank It</h1>
   <nav>
-    <div class="nav-wrapper indigo darken-4">
+    <div class="nav-wrapper teal darken-1">
       <a href="" class="brand-logo">Category</a>
       <ul class="right">
         <li><a href="">Shoes</a></li>
@@ -124,6 +124,11 @@
                         <span class="card-title">${item.name}</span>
                         <p>${item.manufacturer}</p>
                         <a href=${item.url}>Link</a>
+                        <a class="btn-floating"><i class="material-icons">add</i></a>
+                    </div>
+                    <div>
+                        <a class="btn-flat"><i class="material-icons">arrow_upward</i>${item.like_count}</a>
+                        <a class="btn-flat"><i class="material-icons">arrow_downward</i>${item.dislike_count}</a>
                     </div>
                 </div>
             </div>
