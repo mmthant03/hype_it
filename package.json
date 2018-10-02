@@ -19,6 +19,8 @@
   },
   "homepage": "https://github.com/mmthant03/a4-webapp#readme",
   "dependencies": {
+    "cloudinary": "^1.11.0",
+    "multiparty": "^4.2.1",
     "pg": "^7.4.3"
   }
 }

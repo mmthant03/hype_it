@@ -1,15 +1,24 @@
-let http = require("http"),
-  fs = require("fs"),
-  url = require("url"),
-  port = process.env.PORT || 8080;
+let http = require('http'),
+    fs = require('fs'),
+    url = require('url'),
+    multiparty = require('multiparty'),
+    port = process.env.PORT || 8080;
+
+// connecting to cloudinary
+let cloudinary = require('cloudinary')
+cloudinary.config({
+    cloud_name: 'hstxwzowh',
+    api_key: '692532777311551',
+    api_secret: 'Moy4_-Xi5LWmYQNbLc-6WtQWkHI'
+})
 
 // connecting Database
-const { Pool } = require("pg");
+const { Pool } = require('pg');
 const connectionUrl =
-  "postgres://mqjevsmzvtzfbm:4a94df64ee8fe5bc17e09d879441f16b8010ada026f6997b6fb29cf3b5e41471@ec2-50-16-196-57.compute-1.amazonaws.com:5432/d8218gqfsn80ii";
+    "postgres://mqjevsmzvtzfbm:4a94df64ee8fe5bc17e09d879441f16b8010ada026f6997b6fb29cf3b5e41471@ec2-50-16-196-57.compute-1.amazonaws.com:5432/d8218gqfsn80ii";
 const pool = new Pool({
-  connectionString: connectionUrl,
-  ssl: true
+    connectionString: connectionUrl,
+    ssl: true
 });
 pool.connect();
 
@@ -28,7 +37,7 @@ let server = http.createServer(function (req, res) {
         case "/read": // Read all the item from the Database 
             readItem(req, res);
             break;
-        case "/create": // Create an item and store inside the Database
+        case '/create': // Create an item and store inside the Database
             createItem(req, res);
             break;
         case "/action": // Like or Dislike an item
@@ -48,16 +57,6 @@ let server = http.createServer(function (req, res) {
 server.listen(port);
 console.log("Server is listening to port 8080");
 
-function receiveImage(req, res) {
-    let body = []
-    req.on('data', function(chunk) {
-        body.push.chunk;
-    }).on('end', function () {
-
-        console.log(body);
-    })
-    
-}
 
 
 // subroutines
@@ -66,10 +65,6 @@ function send_file(res, filename) {
         res.writeHead(200, { "Content-type": "text/html" });
         res.end(content, "utf-8");
     });
-}
-
-function generateID() {
-    return Date.now().toString(36);
 }
 
 /*  Read and return all items from the database
@@ -94,7 +89,6 @@ async function readItem(req, res) {
     let queryText = "SELECT * FROM public.item;";
     try {
         let data = await pool.query(queryText);
-        console.log(JSON.stringify(data.rows));
         //statusCode = 200;
         res.end(JSON.stringify(data.rows));
     } catch (err) {
@@ -121,27 +115,26 @@ async function readItem(req, res) {
 
 function createItem(req, res) {
     let body = [];
-    req.on('data', (chunk) => {
-        body.push.chunk;
-    }).on('end', () => {
-        body = Buffer.concat(body).toString();
-        console.log("Post Data = " + body);
-        body = JSON.parse(body);
-        save(body);
-
+    req.on('data', function (chunk) {
+        body.push(chunk);
+    }).on('end', function () {
+        var data = Buffer.concat(body).toString();
+        data = JSON.parse(data);
+        save(data);
+        res.end();
     })
 }
 
 async function save(data) {
     let statusCode = 0;
-    let id = generateID();
+    let id = data.id;
     let name = data.name;
     let category = data.category;
     let manufacturer = data.manufacturer;
-    let marketUrl = data.market_url;
+    let marketUrl = data.url;
 
-    let queryText = "INSERT INTO public.item(id, name, category, manufacturer, market_url) \
-    VALUES('" + id + "','" + name + "','" + category + "','" + manufacturer + "','" + marketUrl + "');";
+    let queryText = "INSERT INTO public.item(id, name, category, manufacturer, like_count, dislike_count, market_url) \
+    VALUES('" + id + "','" + name + "','" + category + "','" + manufacturer + "'," + 0 + "," + 0 + ",'" + marketUrl + "');";
 
     try {
         let response = await pool.query(queryText);
@@ -169,7 +162,7 @@ async function save(data) {
 function action(req, res) {
     let body = [];
     req.on('data', (chunk) => {
-        body.push.chunk;
+        body.push(chunk);
     }).on('end', () => {
         body = Buffer.concat(body).toString();
         console.log("Post Data = " + body);
@@ -201,6 +194,51 @@ async function addAction(data) {
     return statusCode;
 };
 
+function receiveImage(req, res) {
+    let form = new multiparty.Form();
+    let id = 0;
+    form.on('error', (err) => {
+        console.log(err);
+        res.writeHead(403, { 'Content-Type': 'text/html' });
+        res.end('Error');
+    });
+    form.on('field', (name, value) => {
+        if(name === 'id') {
+            id = value;
+            console.log("ID is " + id);
+        }
+    })
+    form.on('part', (part) => { 
+        if(!part.filename) return;
+        part.pipe(
+            fs.createWriteStream(`./image/${part.filename}`)
+        ).on('close', () => {
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end('Success');
+            console.log("Filename is " + part.filename);
+            storeImage(part.filename, id);
+        })
+    })
+    form.parse(req);
+}
+
+async function storeImage(filename, id) {
+    var filepath = "./image/" + filename
+    var result = await cloudinary.uploader.upload(filepath);
+    console.log(result);
+    var queryText = "UPDATE public.item SET image='" + result.secure_url + "' WHERE id='" + id + "';";
+
+    try {
+        await pool.query(queryText);
+    } catch (err) {
+        console.log(err);
+    }
+
+    fs.unlink(filepath, (err) => {
+        if (err) console.log(err);
+    })
+}
+
 // implementing this in case if we need to remove like or dislike with user login
 
 // function modifyAction(req, res) {
@@ -214,3 +252,4 @@ async function addAction(data) {
 //         addAction(body);
 //     })
 // }
+
