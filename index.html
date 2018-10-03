@@ -59,56 +59,62 @@
     </div>
     <div id="results">
     </div>
-    <script>
-        var item_arr = [];
-        //read items and build items
-        read();
-        document.getElementById('add').addEventListener('click', function (evt) {
-            var id = Date.now().toString(36);
-            var input = document.getElementById('file');
-            var file = input.files[0];
-            var item = {
-                id : id,
-                name: document.getElementById('name').value,
-                category: document.getElementById('cat').value,
-                manufacturer: document.getElementById('manufacturer').value,
-                url: document.getElementById('url').value,
-            };
-            
 
-            if (!file || !file.type.match(/image.*/)) {
-                alert("You need to upload an image.");
-                return;
-            } else {
-                create(item);
-                upload(file, id);
-            }
-            event.preventDefault()
-        });
+</body>
 
-        // reads all data from server, and calls build
-        function read() {
-            console.log('read');
-            var request = new XMLHttpRequest();
-            request.open('GET', '/read');
-            request.responseType = 'json';
-            request.onload = function () {
-                category_arr = request.response;
-                build(category_arr);
-            };
-            request.send();
+
+
+<script>
+    var item_arr = [];
+    //read items and build items
+    read();
+
+    document.getElementById('add').addEventListener('click', function (evt) {
+        var id = Date.now().toString(36);
+        var input = document.getElementById('file');
+        var file = input.files[0];
+        var item = {
+            id: id,
+            name: document.getElementById('name').value,
+            category: document.getElementById('cat').value,
+            manufacturer: document.getElementById('manufacturer').value,
+            url: document.getElementById('url').value,
+        };
+
+
+        if (!file || !file.type.match(/image.*/)) {
+            alert("You need to upload an image.");
+            return;
+        } else {
+            create(item);
+            upload(file, id);
         }
+        event.preventDefault()
+    });
+
+    // reads all data from server, and calls build
+    function read() {
+        console.log('read');
+        var request = new XMLHttpRequest();
+        request.open('GET', '/read');
+        request.responseType = 'json';
+        request.onload = function () {
+            category_arr = request.response;
+            build(category_arr);
+        };
+        request.send();
+    }
 
 
-        function build(category_arr) {
-            console.log('build');
-            // https://wesbos.com/template-strings-html/
-            var results_html = `${
-                category_arr.map(
-                    item =>
-                        `
+    function build(category_arr) {
+        console.log('build');
+        // https://wesbos.com/template-strings-html/
+        var results_html = `${
+            category_arr.map(
+                item =>
+                    `
         <div id=${item.id}>
-          <input type="hidden" id="id" name="id" value=${item.id}/>
+          <input type="hidden" id="id" name="id" value=${item.id} />
           <div class="col s12 m8 offset-m2 l6 offset-l3">
             <div class="card grey lighten-5 z-depth-1">
               <div class="row valign-wrapper">
@@ -121,15 +127,15 @@
                   <a href=${item.url}>Link</a>
                   <a class="btn-floating"><i class="material-icons">add</i></a></div>
                   <div>
-                    <a class="btn-flat" id="likeButton">
-                      <i class="material-icons" id="likeButton">arrow_upward</i>
+                    <a class="btn-flat" id="likeButton" onclick="likeAction('${item.id}')">
+                      <i class="material-icons" id="likeButton1">arrow_upward</i>
                       <input type="hidden" id="likeCount" name="likeCount" value=${item.like_count}/>
                       ${item.like_count}
                     </a>
-                    <a class="btn-flat id="dislikeButton">
-                      <i class="material-icons" id="dislikeButton">arrow_downward</i>
+                    <a class="btn-flat id="dislikeButton" onclick="dislikeAction('${item.id}')">
+                      <i class="material-icons" id="dislikeButton1">arrow_downward</i>
                       <input type="hidden" id="dislikeCount" name="dislikeCount" value=${item.dislike_count}/>
-                          ${item.dislike_count}
+                      ${item.dislike_count}
                     </a>
                   </div>
               </div>
@@ -137,68 +143,78 @@
           </div>
         </div>
           `
-                ).join('')
-                }`;
-            document.getElementById('results').innerHTML = results_html;
-            document.getElementById('likeButton').addEventListener('click', function (evt) {
-                const item = {};
-                item.id = document.getElementById('id').value;
-                item.action = parseInt(document.getElementById('likeCount').value) + 1;
-                action(item);
-                event.preventDefault();
-            });
+            ).join('')
+            }`;
 
-            document.getElementById('dislikeButton').addEventListener('click', function (evt) {
-                const item = {};
-                item.id = document.getElementById('id').value;
-                item.action = parseInt(document.getElementById('dislikeCount').value) + 1;
-                action(item);
-                event.preventDefault();
-            });
+        document.getElementById('results').innerHTML = results_html;
+    }
+
+    /* @Myo
+        I rewrite these two methods likeAction() and dislikeAction() because
+        the original scripts are preventing from clicking on the other items in the list. 
+    */
+    function likeAction(id) {
+        let item = {};
+        item.id = id;
+        item.action = 'like';
+        action(item);
+        event.preventDefault();
+    }
+
+    function dislikeAction(id) {
+        let item = {};
+        item.id = id;
+        item.action = 'dislike';
+        action(item);
+        event.preventDefault();
+    }
+
+    function create(item) {
+        var request = new XMLHttpRequest();
+        request.open('POST', '/create');
+        request.responseType = 'text';
+        request.onloadend = function () {
+            console.log('done!');
+            read();
         }
+        console.log(JSON.stringify(item));
+        request.send(JSON.stringify(item));
+        console.log('create');
+    }
 
-        function create(item) {
-            var request = new XMLHttpRequest();
-            request.open('POST', '/create');
-            request.responseType = 'text';
-            request.onloadend = function () {
-                console.log('done!');
-                read();
-            }
-            console.log(JSON.stringify(item));
-            request.send(JSON.stringify(item));
-            console.log('create');
+    /*  Upload image to the server
+        @params file - input file which must be an image, id - id of an item to which the image is related.
+        @route /uploadImage
+        @method POST
+    */
+    function upload(file, id) {
+        var fd = new FormData();
+        fd.append('id', id);
+        fd.append('file', file);
+        console.log(file);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/uploadImage");
+        xhr.responseType = 'text';
+        console.log(xhr.status);
+        xhr.onloadend = function () {
+            location.reload();
         }
+        xhr.send(fd);
+    }
 
-        function upload(file, id) {
-            var fd = new FormData();
-            fd.append('id', id);
-            fd.append('file', file);
-            console.log(file);
-            
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "/uploadImage");
-            xhr.responseType = 'text';
-            console.log(xhr.status);
-            xhr.onloadend = function () {
-                location.reload();
-            }
-            xhr.send(fd);
+    function action(item) {
+        var request = new XMLHttpRequest();
+        request.open('PUT', '/action');
+        request.responseType = 'text';
+        request.onload = function (item) {
+            console.log('done!');
+            read();
         }
+        request.send(JSON.stringify(item));
+        console.log('action');
+    }
+</script>
 
-        function action(item) {
-            var request = new XMLHttpRequest();
-            request.open('PUT', '/action');
-            request.responseType = 'text';
-            request.onload = function (item) {
-                console.log('done!');
-                read();
-            }
-            request.send(JSON.stringify(item));
-            console.log('action');
-        }
-    </script>
-
-</body>
 
 </html>

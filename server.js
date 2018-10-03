@@ -26,7 +26,7 @@ pool.connect();
 // Read respective function for require JSON Object
 let server = http.createServer(function (req, res) {
     let uri = url.parse(req.url);
-    console.log(req.method + " " + uri.pathname);
+    console.log("Method : " + req.method + "            Path : " + uri.pathname);
     switch (uri.pathname) {
         case "/":
             send_file(res, "index.html");
@@ -67,7 +67,8 @@ function send_file(res, filename) {
     });
 }
 
-/*  Read and return all items from the database
+/*  @Myo
+    Read and return all items from the database
     method : GET
     responseType : JSON Array
     example : 
@@ -86,7 +87,7 @@ function send_file(res, filename) {
     }] 
 */
 async function readItem(req, res) {
-    let queryText = "SELECT * FROM public.item;";
+    let queryText = "SELECT * FROM public.item ORDER BY like_count DESC;";
     try {
         let data = await pool.query(queryText);
         //statusCode = 200;
@@ -97,7 +98,8 @@ async function readItem(req, res) {
     }
 }
 
-/*  Create an item and store into database
+/*  @Myo
+    Create an item and store into database
     note: id is not required. It will be auto-generated. Image data will be updated when we figure out 
     how to send image from client to server.
     method : POST
@@ -148,7 +150,8 @@ async function save(data) {
 
 }
 
-/*  Like or Dislike on one specific item
+/*  @Myo
+    Like or Dislike on one specific item
     responseType : text
     requiredDataType : JSON
     example : 
@@ -165,9 +168,9 @@ function action(req, res) {
         body.push(chunk);
     }).on('end', () => {
         body = Buffer.concat(body).toString();
-        console.log("Post Data = " + body);
         body = JSON.parse(body);
         addAction(body);
+        res.end();
     })
 }
 
@@ -175,12 +178,11 @@ async function addAction(data) {
     let statusCode = 0;
     let id = data.id;
     let queryText = "";
-    if (data.action == like) {
+    if (data.action === 'like') {
         queryText = "UPDATE public.item SET like_count = like_count+1 WHERE id='" + id + "';";
-    } else if (data.action == dislike) {
+    } else if (data.action === 'dislike') {
         queryText = "UPDATE public.item SET dislike_count = dislike_count+1 WHERE id='" + id + "';";
     }
-
     try {
         if (queryText != "") {
             let response = await pool.query(queryText);
@@ -194,6 +196,15 @@ async function addAction(data) {
     return statusCode;
 };
 
+
+/*  @Myo
+    Receive image from the client side sent by XMLHttpRequest
+    Receiving DataType is Javascript FormData using three events emitter called error, field and part.
+    Field contains key and value pair. Part contain input file.
+    Procedure : Image is sent from client side > ID is extracted by field event > Image is extracted by part event >
+                Image Data is then write into "./image/" path > Image in local storage is then uploaded into storage server >
+                The resulting url is then inserted into database as a reference > Image is local storage is removed.
+*/
 function receiveImage(req, res) {
     let form = new multiparty.Form();
     let id = 0;
@@ -205,7 +216,6 @@ function receiveImage(req, res) {
     form.on('field', (name, value) => {
         if(name === 'id') {
             id = value;
-            console.log("ID is " + id);
         }
     })
     form.on('part', (part) => { 
@@ -215,7 +225,6 @@ function receiveImage(req, res) {
         ).on('close', () => {
             res.writeHead(200, { 'Content-Type': 'text/html' });
             res.end('Success');
-            console.log("Filename is " + part.filename);
             storeImage(part.filename, id);
         })
     })
@@ -225,7 +234,6 @@ function receiveImage(req, res) {
 async function storeImage(filename, id) {
     var filepath = "./image/" + filename
     var result = await cloudinary.uploader.upload(filepath);
-    console.log(result);
     var queryText = "UPDATE public.item SET image='" + result.secure_url + "' WHERE id='" + id + "';";
 
     try {
@@ -238,18 +246,4 @@ async function storeImage(filename, id) {
         if (err) console.log(err);
     })
 }
-
-// implementing this in case if we need to remove like or dislike with user login
-
-// function modifyAction(req, res) {
-//     let body = [];
-//     req.on('data', (chunk) => {
-//         body.push.chunk;
-//     }).on('end', () => {
-//         body = Buffer.concat(body).toString();
-//         console.log("Post Data = " + body);
-//         body = JSON.parse(body);         
-//         addAction(body);
-//     })
-// }
 
