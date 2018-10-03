@@ -9,14 +9,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
 
 
-    <h1 class="center-align">Rank It</h1>
+    <h1 class="center-align" style="font-family: 'Helvetica Neue'">Hype It</h1>
     <nav>
-        <div class="nav-wrapper indigo darken-4">
-            <a href="" class="brand-logo">Category</a>
-            <ul class="right">
-                <li><a href="">Shoes</a></li>
-                <li><a href="">Clothing</a></li>
-            </ul>
+        <div class="nav-wrapper grey lighten-2 z-depth-1" style="padding-left: 10px">
+            <a href="" class="brand-logo black-text" style="font-family: Helvetica Neue">Vote for your favorite shoes NOW</a>
         </div>
     </nav>
     </div>
@@ -35,9 +31,6 @@
                 <!--https://stackoverflow.com/a/4209108-->
             </div>
             <div class="input-field col s4">
-                <input id="cat" placeholder="Category i.e., Clothing" type="text">
-            </div>
-            <div class="input-field col s4">
                 <input id="manufacturer" placeholder="Manufacturer" type="text">
             </div>
             <div class="input-field col s4">
@@ -53,7 +46,7 @@
                 </div>
             </div>
             <div class="input-field col s4">
-                <button class="btn waves-effect waves-light grey darken-2" id="add">Add</button>
+                <button class="btn waves-effect waves-light grey darken-2" id="add">HYPE IT</button>
             </div>
         </form>
     </div>
@@ -76,7 +69,7 @@
         var item = {
             id: id,
             name: document.getElementById('name').value,
-            category: document.getElementById('cat').value,
+            category: 'Shoe',
             manufacturer: document.getElementById('manufacturer').value,
             url: document.getElementById('url').value,
         };
@@ -128,8 +121,7 @@
                 <div class="card-content col s10">
                   <span class="card-title">${item.name}</span>
                   <p>${item.manufacturer}</p>
-                  <a href="${item.market_url}">Link</a>
-                  <a class="btn-floating"><i class="material-icons">add</i></a></div>
+                  <a href="${item.market_url}">Go check it out!</a>
                   <div>
                     <a class="btn-flat" id="likeButton" onclick="likeAction('${item.id}')">
                       <i class="material-icons" id="likeButton1">arrow_upward</i>
