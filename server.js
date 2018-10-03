@@ -37,7 +37,7 @@ let server = http.createServer(function (req, res) {
         case "/read": // Read all the item from the Database 
             readItem(req, res);
             break;
-        case '/create': // Create an item and store inside the Database
+        case "/create": // Create an item and store inside the Database
             createItem(req, res);
             break;
         case "/action": // Like or Dislike an item

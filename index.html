@@ -177,8 +177,8 @@
         var request = new XMLHttpRequest();
         request.open('POST', '/create');
         request.responseType = 'text';
-        request.onloadend = function () {
-            console.log('done!');
+        request.onload = function () {
+            console.log('create!');
             read();
         }
         console.log(JSON.stringify(item));
@@ -200,9 +200,9 @@
         var xhr = new XMLHttpRequest();
         xhr.open("POST", "/uploadImage");
         xhr.responseType = 'text';
-        console.log(xhr.status);
-        xhr.onloadend = function () {
-            location.reload();
+        xhr.onload = function () {
+            console.log('upload!');
+            read();
         }
         xhr.send(fd);
     }
