@@ -80,7 +80,11 @@
             manufacturer: document.getElementById('manufacturer').value,
             url: document.getElementById('url').value,
         };
-
+       
+        if (item.url != null && !item.url.includes("https://")) {
+            alert("Please provide a secure link for others.");
+            return;
+        }
 
         if (!file || !file.type.match(/image.*/)) {
             alert("You need to upload an image.");
@@ -124,7 +128,7 @@
                 <div class="card-content col s10">
                   <span class="card-title">${item.name}</span>
                   <p>${item.manufacturer}</p>
-                  <a href=${item.url}>Link</a>
+                  <a href="${item.market_url}">Link</a>
                   <a class="btn-floating"><i class="material-icons">add</i></a></div>
                   <div>
                     <a class="btn-flat" id="likeButton" onclick="likeAction('${item.id}')">
