@@ -52,16 +52,22 @@ Do the following to complete this assignment:
 Sample Readme (delete the above when you're ready to submit, and modify the below so with your links and descriptions)
 ---
 
-## Your Team Name | YOUR TEAM'S AREA | Web Application Title
-`insert team names here`
+## Hype It | Social Media | a4-hypeit.herokuapp.com
+`Myo Min Thant` `Taehyun Kim` `Stephanie Racca` `Adam Camilli`
 
-Include a brief summary of your project here.
-Images are encouraged, along with concise, high-level text.
+HypeIt is a full stacked web application where anyone is encouraged to make
+a post fast and simple.
+Anyone can make a post on shoes and other people can up-vote or down-vote on the post.
+Shoes are ordered by up-vote counts.
+Users can get link, manufacturer, image, and product name of the shoes.
 
 ## Technical Achievements
-- **Tech Achievement 1**: Using a combination of...
-- **Tech Achievement 2**: ...
+- **Tech Achievement 1**: adding database as a remote PostgreSQL using Heroku addon
+- **Tech Achievement 2**: adding image processing server Cloudinary with Heroku addon
+- **Tech Achievement 3**: Transfer image data using Javascript FormData object.
+- **Tech Achievement 4**: Applied multiparty modules to decode the FormData object.
+- **Tech Achievement 5**: Using external API with API key method and declaring environment variable.
 
 ### Design/Evaluation Achievements
-- **Design Achievement 1**: Shown in `style.css`, the code...
-- **Design Achievement 2**: We tested the application with n=X users, finding that...
+- **Design Achievement 1**: Google's `material.io` was used to make html look cleaner and easy to navigate 
+- **Design Achievement 2**: Event based interaction to capture user error (ex. If user uploads something other than image file they will get an error message)
