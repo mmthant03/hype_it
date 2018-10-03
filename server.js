@@ -91,7 +91,6 @@ async function readItem(req, res) {
     try {
         let data = await pool.query(queryText);
         //statusCode = 200;
-        res.writeHead(200);
         res.end(JSON.stringify(data.rows));
     } catch (err) {
         console.log(err);
