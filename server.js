@@ -91,6 +91,7 @@ async function readItem(req, res) {
     try {
         let data = await pool.query(queryText);
         //statusCode = 200;
+        res.writeHead(200);
         res.end(JSON.stringify(data.rows));
     } catch (err) {
         console.log(err);
@@ -232,7 +233,7 @@ function receiveImage(req, res) {
 }
 
 async function storeImage(filename, id) {
-    var filepath = "./image/" + filename
+    var filepath = "./image/" + filename;
     var result = await cloudinary.uploader.upload(filepath);
     var queryText = "UPDATE public.item SET image='" + result.secure_url + "' WHERE id='" + id + "';";
 
