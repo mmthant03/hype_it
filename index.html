@@ -102,14 +102,9 @@
         var request = new XMLHttpRequest();
         request.open('GET', '/read');
         request.responseType = 'json';
-        request.onreadystatechange = function () {
-            if (request.readyState === 4) {
-                category_arr = request.response;
-                build(category_arr);
-            } else {
-                return;
-            }
-
+        request.onload = function () {
+            category_arr = request.response;
+            build(category_arr);
         };
         request.send();
     }
