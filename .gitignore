@@ -65,5 +65,5 @@ typings/
 
 # unnecessary but will make conflict
 **/*.DS_Store*
-.package-lock.json
+package-lock.json
 .idea/s
